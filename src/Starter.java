@@ -1,8 +1,11 @@
 /**
  * Created by Jacqueline Cardozo, Fernando Silva, Paulo Victor Sarmento on 4/26/16.
  */
+
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -11,36 +14,45 @@ public class Starter {
 
     // The file must end with "EOF" on the last line
     // Must have blank spaces " : " between variable + value
-    public static String file = "/Users/Jackie/IdeaProjects/homework10/src/files/wi29.tsp";
+    public static String file;
 
-    public static void main (String [] args){''
+
+    public static void main(String[] args) {
+        try {
+            String path = args[0];
+            file = path;
+        } catch (ArrayIndexOutOfBoundsException x) {
+            System.out.println("Path is empty.");
+            System.exit(0);
+        }
+
         TSPObject tsp = parser(file);
 
         ArrayList<NodeCoordSection> bestPath = new ArrayList<>();
         ArrayList<NodeCoordSection> listOfNodes = tsp.getNodeCoord();
 
-        int [] distances = new int[listOfNodes.size()];
+        int[] distances = new int[listOfNodes.size()];
         int tourCost = 0;
         bestPath.add(listOfNodes.get(0));
         listOfNodes.remove(0);
         NodeCoordSection bestNode = new NodeCoordSection();
         distances[0] = 0;
 
-        while(!listOfNodes.isEmpty()) {
+        while (!listOfNodes.isEmpty()) {
             int listSize = listOfNodes.size();
             int lowestDistance = 10000;
             NodeCoordSection lowestDistanceNode = new NodeCoordSection();
 
             for (NodeCoordSection node : listOfNodes) {
-                    NodeCoordSection firstNode = bestPath.get(bestPath.size() - 1);
-                    Comparator comparator = new Comparator(firstNode, node);
+                NodeCoordSection firstNode = bestPath.get(bestPath.size() - 1);
+                Comparator comparator = new Comparator(firstNode, node);
 
-                    //System.out.println("Distance from " + firstNode.getId() + " to " + node.getId() + " is: " + comparator.getDistance());
+                //System.out.println("Distance from " + firstNode.getId() + " to " + node.getId() + " is: " + comparator.getDistance());
 
-                    if(comparator.getDistance() < lowestDistance){
-                        lowestDistance = comparator.getDistance();
-                        lowestDistanceNode = node;
-                    }
+                if (comparator.getDistance() < lowestDistance) {
+                    lowestDistance = comparator.getDistance();
+                    lowestDistanceNode = node;
+                }
             }
             distances[bestPath.size()] = lowestDistance;
             tourCost += lowestDistance;
@@ -59,7 +71,7 @@ public class Starter {
 //        System.out.println(tsp.toString());
     }
 
-    public static TSPObject parser(String fileName){
+    public static TSPObject parser(String fileName) {
         TSPObject tsp = new TSPObject();
         try {
             File f = new File(fileName);
@@ -72,30 +84,30 @@ public class Starter {
             String edge = "";
             ArrayList<NodeCoordSection> nodesCoord = new ArrayList<>();
 
-            while(sc.hasNextLine()){
+            while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                if(line.indexOf("EOF") == -1) {
+                if (line.indexOf("EOF") == -1) {
                     if (line.indexOf(":") != -1) {
                         String[] details = line.split(" : ");
-                        switch (details[0]){
-                            case "NAME" :
+                        switch (details[0]) {
+                            case "NAME":
                                 name = details[1];
 //                                System.out.println(name);
                                 break;
-                            case "COMMENT" :
+                            case "COMMENT":
                                 String comment = details[1];
                                 comments.add(comment);
 //                                System.out.println(comment);
                                 break;
-                            case "TYPE" :
+                            case "TYPE":
                                 type = details[1];
 //                                System.out.println(type);
                                 break;
-                            case "DIMENSION" :
+                            case "DIMENSION":
                                 dimension = Integer.parseInt(details[1]);
 //                                System.out.println(dimension);
                                 break;
-                            case "EDGE_WEIGHT_TYPE" :
+                            case "EDGE_WEIGHT_TYPE":
                                 edge = details[1];
 //                                System.out.println(edge);
                                 break;
